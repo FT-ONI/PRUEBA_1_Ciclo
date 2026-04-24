@@ -27,7 +27,7 @@ jobs:
     with:
       # Mantenemos la URL completa de ECR para evitar el error de despliegue
       image_uri: 219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}
-      cluster_name: 'techmarket-cluster'
+      cluster_name: 'techmarket-backend'
       aws_region: 'us-east-1'
       namespace: 'default'
     secrets: inherit
