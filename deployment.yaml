@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techmarket-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: techmarket
+  template:
+    metadata:
+      labels:
+        app: techmarket
+    spec:
+      containers:
+      - name: myapp
+        # Esta imagen será reemplazada automáticamente por el pipeline
+        image: 219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: techmarket-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: techmarket
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
