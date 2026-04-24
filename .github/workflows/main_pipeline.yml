@@ -6,13 +6,13 @@ on:
 
 jobs:
   ejecutar-pruebas:
-    uses: ./.github/workflows/templates/template_test.yml
+    uses: ./.github/workflows/template_test.yml
     with:
       node_version: '20'
 
   construir-y-subir:
     needs: ejecutar-pruebas
-    uses: ./.github/workflows/templates/template_build.yml
+    uses: ./.github/workflows/template_build.yml
     with:
       aws_region: 'us-east-1'
       ecr_repository: 'techmarket-backend'
@@ -21,7 +21,7 @@ jobs:
 
   desplegar-en-eks:
     needs: construir-y-subir
-    uses: ./.github/workflows/templates/template_deploy.yml
+    uses: ./.github/workflows/template_deploy.yml
     with:
       image_uri: ${{ github.sha }}
       cluster_name: 'techmarket-cluster'
