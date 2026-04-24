@@ -7,13 +7,14 @@ on:
 
 jobs:
   ejecutar-pruebas:
-    uses: ./.github/workflows/templates/template_test.yml
+    # Eliminamos "/templates/" de la ruta
+    uses: ./.github/workflows/template_test.yml
     with:
       node_version: '20'
 
   construir-y-subir:
     needs: ejecutar-pruebas
-    uses: ./.github/workflows/templates/template_build.yml
+    uses: ./.github/workflows/template_build.yml
     with:
       aws_region: 'us-east-1'
       ecr_repository: 'techmarket-backend'
@@ -22,9 +23,9 @@ jobs:
 
   desplegar-en-eks:
     needs: construir-y-subir
-    uses: ./.github/workflows/templates/template_deploy.yml
+    uses: ./.github/workflows/template_deploy.yml
     with:
-      # CORRECCIÓN: Usamos la URL completa del ECR que vimos en tus logs
+      # Mantenemos la URL completa de ECR para evitar el error de despliegue
       image_uri: 219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
