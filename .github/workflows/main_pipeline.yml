@@ -26,4 +26,5 @@ jobs:
       image_uri: ${{ github.sha }}
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
+      namespace: 'default'
     secrets: inherit
