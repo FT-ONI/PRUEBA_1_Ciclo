@@ -1,12 +1,12 @@
+name: TechMarket Main Pipeline
+
 on:
   push:
-    branches: [ "master", "main" ]
-  workflow_dispatch:
-
-name: TechMarket Main Pipeline
+    branches: [ "master" ]
 
 jobs:
   ejecutar-pruebas:
+    # Si tus archivos están dentro de la carpeta 'templates', usa esta ruta:
     uses: ./.github/workflows/templates/template_test.yml
     with:
       node_version: '20'
@@ -24,7 +24,8 @@ jobs:
     needs: construir-y-subir
     uses: ./.github/workflows/templates/template_deploy.yml
     with:
-      image_uri: '219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}'
+      # CORRECCIÓN: EKS necesita la URL completa de la imagen, no solo el SHA
+      image_uri: 219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
       namespace: 'default'
