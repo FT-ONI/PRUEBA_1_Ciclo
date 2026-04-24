@@ -1,6 +1,3 @@
-name: "Template - Build & Push (v1.1.0)"
-description: "Construye la imagen Docker y la sube a AWS ECR"
-
 on:
   workflow_call:
     inputs:
