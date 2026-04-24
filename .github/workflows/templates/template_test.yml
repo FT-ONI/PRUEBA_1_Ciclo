@@ -1,0 +1,35 @@
+name: "Template - Test (v1.0.0)"
+description: "Ejecuta pruebas unitarias y análisis de vulnerabilidades"
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: "Versión de Node.js a utilizar"
+        required: true
+        type: string
+        default: '20'
+    # Definición de variables de entorno comunes
+    env:
+      NODE_ENV: test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4 # Acción externa desde Marketplace
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 # Acción externa desde Marketplace
+        with:
+          node-version: ${{ inputs.node_version }}
+          
+      - name: Instalar Dependencias
+        run: npm ci
+        
+      - name: Verificación de Seguridad (Compliance)
+        run: npm audit
+        
+      - name: Ejecución de Pruebas
+        run: npm test

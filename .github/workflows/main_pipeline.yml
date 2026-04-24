@@ -1,0 +1,46 @@
+name: TechMarket Main Pipeline
+
+# El pipeline se activa con cada "push" a la rama main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # ==========================================
+  # 1. LLAMADA A LA PLANTILLA DE PRUEBAS
+  # ==========================================
+  ejecutar-pruebas:
+    uses: ./.github/workflows/templates/template_test.yml
+    with:
+      [cite_start]node_version: '20' # Parametrización de la versión [cite: 14]
+
+  # ==========================================
+  # 2. LLAMADA A LA PLANTILLA DE CONSTRUCCIÓN
+  # ==========================================
+  construir-y-subir:
+    [cite_start]needs: ejecutar-pruebas # Solo corre si el test fue exitoso 
+    uses: ./.github/workflows/templates/template_build.yml
+    with:
+      aws_region: 'us-east-1'
+      ecr_repository: 'techmarket-backend'
+      image_tag: ${{ github.sha }} # Usa el ID del commit como etiqueta
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+  # ==========================================
+  # 3. LLAMADA A LA PLANTILLA DE DESPLIEGUE
+  # ==========================================
+  desplegar-en-eks:
+    needs: construir-y-subir # Solo corre si el build fue exitoso
+    uses: ./.github/workflows/templates/template_deploy.yml
+    with:
+      image_uri: ${{ needs.construir-y-subir.outputs.image_uri }}
+      namespace: 'produccion'
+      cluster_name: 'techmarket-cluster'
+      aws_region: 'us-east-1'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}

@@ -1,0 +1,59 @@
+name: "Template - Build & Push (v1.1.0)"
+description: "Construye la imagen Docker y la sube a AWS ECR"
+
+on:
+  workflow_call:
+    inputs:
+      aws_region:
+        required: true
+        type: string
+      ecr_repository:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: false
+    outputs:
+      image_uri:
+        description: "URI completa de la imagen Docker subida"
+        value: ${{ jobs.build.outputs.final_image_uri }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      final_image_uri: ${{ steps.build-push.outputs.uri }}
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        
+      - name: Configurar Credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v5.1.0 # Integración externa validada
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ inputs.aws_region }}
+          
+      - name: Login en Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
+      - name: Build, Tag & Push a ECR
+        id: build-push
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPO: ${{ inputs.ecr_repository }}
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/$REPO:$TAG .
+          docker push $ECR_REGISTRY/$REPO:$TAG
+          # Retornamos el output para que la plantilla de deploy lo utilice
+          echo "uri=$ECR_REGISTRY/$REPO:$TAG" >> $GITHUB_OUTPUT
