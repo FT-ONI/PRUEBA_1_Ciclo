@@ -44,4 +44,4 @@ jobs:
           echo "Desplegando la imagen ${{ inputs.image_uri }}..."
           echo "Aplicando cambios en el namespace: ${{ inputs.namespace }}"
           # Comando real (descomentar cuando existan los manifiestos k8s):
-          # kubectl set image deployment/techmarket-app myapp=${{ inputs.image_uri }} -n ${{ inputs.namespace }}
+          kubectl set image deployment/techmarket-app myapp=${{ inputs.image_uri }} -n ${{ inputs.namespace }}
