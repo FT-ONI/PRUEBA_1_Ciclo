@@ -3,7 +3,7 @@ name: TechMarket Main Pipeline
 # El pipeline se activa con cada "push" a la rama main
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   # ==========================================
