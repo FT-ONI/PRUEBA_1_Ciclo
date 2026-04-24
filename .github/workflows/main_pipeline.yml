@@ -2,17 +2,18 @@ name: TechMarket Main Pipeline
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
+  workflow_dispatch:
 
 jobs:
   ejecutar-pruebas:
-    uses: ./.github/workflows/template_test.yml
+    uses: ./.github/workflows/templates/template_test.yml
     with:
       node_version: '20'
 
   construir-y-subir:
     needs: ejecutar-pruebas
-    uses: ./.github/workflows/template_build.yml
+    uses: ./.github/workflows/templates/template_build.yml
     with:
       aws_region: 'us-east-1'
       ecr_repository: 'techmarket-backend'
@@ -21,10 +22,10 @@ jobs:
 
   desplegar-en-eks:
     needs: construir-y-subir
-    uses: ./.github/workflows/template_deploy.yml
+    uses: ./.github/workflows/templates/template_deploy.yml
     with:
-      image_uri: ${{ github.sha }}
+      image_uri: '219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}'
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
-      namespace: 'default'
+      namespace: 'default' # <--- Esto faltaba y causaba error
     secrets: inherit
