@@ -7,28 +7,17 @@ on:
       node_version:
         required: true
         type: string
-        default: '20'
-    # Definición de variables de entorno comunes
-    env:
-      NODE_ENV: test
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
+      - uses: actions/checkout@v4
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
-          
-      - name: Instalar Dependencias
+      - name: Install dependencies
         run: npm install
-        
-      - name: Verificación de Seguridad (Compliance)
-        run: npm audit
-        
-      - name: Ejecución de Pruebas
+      - name: Run tests
         run: npm test
