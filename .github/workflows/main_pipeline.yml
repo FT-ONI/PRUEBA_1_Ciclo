@@ -17,20 +17,13 @@ jobs:
       aws_region: 'us-east-1'
       ecr_repository: 'techmarket-backend'
       image_tag: ${{ github.sha }}
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    secrets: inherit
 
   desplegar-en-eks:
     needs: construir-y-subir
     uses: ./.github/workflows/templates/template_deploy.yml
     with:
       image_uri: ${{ github.sha }}
-      namespace: 'produccion'
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    secrets: inherit
