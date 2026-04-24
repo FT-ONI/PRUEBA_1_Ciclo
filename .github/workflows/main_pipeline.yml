@@ -1,9 +1,9 @@
-name: TechMarket Main Pipeline
-
 on:
   push:
     branches: [ "master", "main" ]
   workflow_dispatch:
+
+name: TechMarket Main Pipeline
 
 jobs:
   ejecutar-pruebas:
@@ -27,5 +27,5 @@ jobs:
       image_uri: '219241426160.dkr.ecr.us-east-1.amazonaws.com/techmarket-backend:${{ github.sha }}'
       cluster_name: 'techmarket-cluster'
       aws_region: 'us-east-1'
-      namespace: 'default' # <--- Esto faltaba y causaba error
+      namespace: 'default'
     secrets: inherit
