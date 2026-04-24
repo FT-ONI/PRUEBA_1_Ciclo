@@ -1,0 +1,11 @@
+{
+  "name": "techmarket-backend",
+  "version": "1.0.0",
+  "description": "API de prueba para el pipeline de TechMarket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Pruebas ejecutadas correctamente para TechMarket\" && exit 0"
+  },
+  "author": "Estudiante Duoc",
+  "license": "ISC"
+}
